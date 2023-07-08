@@ -1,0 +1,86 @@
+//Amber Lu
+
+//this class is ElectionSimulator
+//in the class the main method will do the 5 simulation to calculate ten 
+//districts votes and vote percentage.
+//and the method will display each simulation by minus and plus symbols
+
+import java.util.*;
+
+public class ElectionSimulator {
+    public static final int NUM_SIMS = 5;
+    public static final int NUM_DISTS = 10;
+    public static final double POLL_AVG =0.52;
+    public static final double POLL_ERR =0.05;
+
+    public static void main(String[] args){
+        double newPOLL_AVG = POLL_AVG * 100;
+        double newPOLL_ERR = POLL_ERR * 100;
+
+        System.out.println("Welcome to the Election Simulator!");
+        System.out.println("Running " + NUM_SIMS + " simulations of " + NUM_DISTS + " districts.");
+        System.out.println("Our candidate is polling at " + newPOLL_AVG + "% with a " 
+                           + newPOLL_ERR +"% margin of error.");
+        System.out.println();
+
+        Random rand = new Random();
+        double sumVotePct = 0.0;
+        for(int simulationsTimes =1; simulationsTimes <= NUM_SIMS; simulationsTimes++){
+            System.out.println("Running simulation #" + simulationsTimes + ":");
+
+            int totalVotes = 0;
+            int ourVotes = 0;
+            for(int districtsNum=1; districtsNum<=NUM_DISTS; districtsNum++){
+                int numVoters = rand.nextInt(1000) + 1;
+                //Randomly generate the number of participants in the poll
+
+                double pollingError = rand.nextGaussian() * 0.5 * POLL_ERR;
+                //Random generation error rate
+
+                double distOurVotePct = (POLL_AVG + pollingError) * 100;
+                distOurVotePct = (double) Math.round(distOurVotePct * 100) / 100;
+                double distOpponentVotePct = 100 - distOurVotePct;
+                //Define the percentage of votes received by the two contenders
+
+                int ourVote = (int) ( (POLL_AVG + pollingError) * numVoters);
+                int opponentVote = numVoters - ourVote;
+                //Calculate the exact number of votes
+
+                totalVotes = totalVotes + numVoters;
+                ourVotes = ourVotes + ourVote;
+            }
+            int opponentVotes = totalVotes - ourVotes;
+            double ourVotePct = ourVotes * 100.0 / totalVotes;
+            double ourVotePctRounded  = (double) Math.round(ourVotePct * 100) / 100;
+            double opponentVotePctRounded = 100 - ourVotePctRounded;
+
+            System.out.println("  Win? " + (ourVotes > opponentVotes));
+            //print true or false
+
+            System.out.println("  Results: " + ourVotes + " (" + ourVotePctRounded + "%) - " +
+                               opponentVotes + " (" + opponentVotePctRounded + "%)");
+            //print results
+
+            int plus = ourVotes/100;
+            System.out.print("  Visualization: ");
+            for(int plusNum = 0; plusNum < plus; plusNum ++){
+                System.out.print("+");
+            }
+            System.out.println();
+            int minus = opponentVotes/100;
+            System.out.print("                 ");
+            for(int minusNum =0; minusNum < minus; minusNum ++){
+                System.out.print("-");
+            }
+            //print plus and minus
+            System.out.println();
+
+            sumVotePct = sumVotePct + ourVotePct;
+        }
+        double avgVotePct = sumVotePct / NUM_SIMS;
+        double avgVotePctRounded = (double) Math.round(avgVotePct * 100) / 100;
+        System.out.println();
+        System.out.println("Average vote percentage: " + avgVotePctRounded + "%");
+
+    }
+}
