@@ -1,0 +1,194 @@
+//Amber Lu
+
+//this class is used to let patients to write some infomations
+//this class also calculate the whole score and priority
+import java.util.*;
+
+public class PatientPrioritizer {
+    public static final int HOSPITAL_ZIP = 12345;
+    //this method is used to call all the method under and to make sure
+//if all the patients today is clear
+    public static void main (String[] args){
+        Scanner console = new Scanner(System.in);
+        int patientNum = 0;
+        int scoreMax = 0;
+
+        introduction();
+        boolean patientClear = false;
+        while(!patientClear){
+            String name = getName(console);
+            if(name.equals("quit")){
+                patientClear = true;
+            }else{
+                int score = getInfo(console);
+                if(scoreMax < score){
+                    scoreMax = score;
+                }
+                patientNum = patientNum +1;
+                printPriority(name,score);
+            }
+        }
+        statistic(patientNum,scoreMax);
+
+
+    }
+
+    //this methods is used to write the introductiona at the beginning
+    public static void introduction(){
+        System.out.println("Hello! We value you and your time, so we will help");
+        System.out.println("you prioritize which patients to see next!");
+        System.out.println("Please answer the following questions about the next patient so");
+        System.out.println("we can help you do your best work :)");
+        System.out.println();
+
+    }
+
+    //this method is used to ask the patients' name
+    public static String getName(Scanner cs){
+        System.out.println("Please enter the next patient's name or \"quit\" to end the program.");
+        System.out.print("Patient's name: " );
+        String patientName = cs.next();
+        return patientName;
+    }
+
+    //this method is used to ask patients' age
+    public static int getAge(Scanner cs){
+        System.out.print("Patient age: ");
+        int patientAge = cs.nextInt();
+        return patientAge;
+    }
+
+    // Takes in an integer input.
+    // Returns true if the integer has 5 digits, and false otherwise.
+
+    //this method is used to make sure if the num of code patients write
+    //is 5
+    public static boolean fiveDigits(int val) {
+        val = val / 10000; // get first digit
+        if (val == 0) { // has less than 5 digits
+            return false;
+        } else if (val / 10 == 0) { // has 5 digits
+            return true;
+        } else { // has more than 5 digits
+            return false;
+        }
+        // NOTE: the above can be written with improved "boolean zen" as follows:
+        // return val != 0 && val / 10 == 0;
+    }
+
+    //this method is used to get code
+    public static int getCode(Scanner cs){
+        System.out.print("Patient zip code: ");
+        int code = cs.nextInt();
+        while(!fiveDigits(code)){
+            System.out.print("Invalid zip code, enter valid zip code: ");
+            code = cs.nextInt();
+        }
+        return code;
+    }
+    //thhis method is used to make sure if the patients are in hospital network
+    public static boolean getNetwork(Scanner cs){
+        System.out.print("Is our hospital \"in network\" for the patient's insurance? ");
+        String network =  cs.next();
+        boolean inNetwork;
+        if(network.equals("yes")  || network.equals("y") ){
+            inNetwork = true;
+        }else{
+            inNetwork = false;
+        }
+        return inNetwork;
+    }
+
+    //this method is used to get patients' pain level
+    public static int getLevel(Scanner cs){
+        System.out.print("Patient pain level (1-10): ");
+        int levelNum = cs.nextInt();
+        while(levelNum >10 || levelNum <1){
+            System.out.print("Invalid pain level, enter valid pain level (1-10): ");
+            levelNum = cs.nextInt();
+        }
+        return levelNum;
+    }
+
+    //this method is used to get patients' temperature
+    public static double getTem(Scanner cs){
+        System.out.print("Patient temperature (in degrees Fahrenheit): ");
+        double patientTem = cs.nextDouble();
+        return patientTem;
+    }
+
+    //this method is used to calculate score for one patient
+    public static int scoreCal(int age,int code,boolean network,int level,double tem){
+        int baseScore = 100;
+        int score =0;
+        if (age<12 || age>=75){
+            score = baseScore + 50;
+        }else{
+            score = baseScore;
+        }
+        int firstPatientZip = code/ 10000;
+        int firstHospitalZip = HOSPITAL_ZIP/10000;
+        if(firstPatientZip == firstHospitalZip){
+            score= score + 25;
+            int secondPatientZip = code/1000%10;
+            int secondHospitalZip = HOSPITAL_ZIP/1000%10;
+            if(secondPatientZip == secondHospitalZip) {
+                score = score + 15;
+            }
+        }
+        if(network){
+            score = score +50;
+        }
+
+        score = score + level * 10;
+        if(tem > 99.5){
+            score = score + 8;
+        }
+        return score;
+
+    }
+
+    //this method is used to get th info together and indentify a int named score
+    public static int getInfo(Scanner sc){
+        int age = getAge(sc);
+        int code = getCode(sc);
+        boolean network = getNetwork(sc);
+        int level = getLevel(sc);
+        double tem = getTem(sc);
+        int score = scoreCal(age,code,network,level,tem);
+        return score;
+    }
+
+    //this method is used to print the priority for one patient
+    public static void printPriority(String name, int score){
+        System.out.println();
+        System.out.println("We have found patient " + name + " to have a priority score " +
+                "of: " + score);
+        if(score >= 333){
+            System.out.println("We have determined this patient is high priority," );
+            System.out.println("and it is advised to call an appropriate medical provider ASAP.");
+        }else if (score>= 168 ){
+            System.out.println("We have determined this patient is medium priority." );
+            System.out.println("Please assign an appropriate medical provider to their case");
+            System.out.println("and check back in with the patient's condition in a little " +
+                    "while.");
+        }else{
+            System.out.println("We have determined this patient is low priority.");
+            System.out.println("Please put them on the waitlist for when a medical " +
+                    "provider becomes available.");
+        }
+        System.out.println();
+        System.out.println("Thank you for using our system!");
+        System.out.println("We hope we have helped you do your best!");
+        System.out.println();
+    }
+
+    //this method is used to print the static for whole day about the number of
+//patient and the highest score
+    public static void statistic(int patientNum, int scoreMax){
+        System.out.println("Statistics for the day:");
+        System.out.println("..." + patientNum + " patients were helped");
+        System.out.println("...the highest priority patient we saw had a score of " + scoreMax);
+        System.out.println("Good job today!");
+    }
+}
