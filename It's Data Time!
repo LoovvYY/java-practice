@@ -1,0 +1,131 @@
+//Amber Lu
+
+//this method is used to read a file and try to put the data in the file into a histograms
+//and calculate some statistics data
+
+import java.util.*;
+import java.io.*;
+
+public class FunWithHistograms {
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner console = new Scanner(System.in);
+        introduction();
+
+        do {
+            System.out.println();
+            System.out.print("Input file name? ");
+            String inputName = console.next();
+            File newFile = new File(inputName);
+            Scanner fileScanner = new Scanner(newFile);
+            int[] data = readFile(fileScanner);
+            int[] counts = getCounts(data);
+            System.out.print("Output file name? ");
+            String outputName = console.next();
+            PrintStream output = new PrintStream(new File(outputName));
+            output.println("Histogram for " + inputName);
+            output.println();
+            printHistogram(counts, output);
+            printStats(data, counts, output);
+        } while (keepOn(console));
+        System.out.println();
+        System.out.println("Thanks for having fun with histograms!");
+    }
+
+//this method is used to print the introduction
+    public static void introduction() {
+        System.out.println("The program will analyze data from a dataset of");
+        System.out.println("non-negative integer values. It will produce a");
+        System.out.println("histogram of the data and some statistics.");
+        System.out.println("The result will be written to an output file.");
+    }
+
+//this method is used to read the file that users create
+    public static int[] readFile(Scanner fileScanner) {
+        int valueNum = fileScanner.nextInt();
+        int[] dataFile = new int[valueNum];
+        for (int i = 0; i < valueNum; i++) {
+            int dataNum = fileScanner.nextInt();
+            dataFile[i] = dataNum;
+        }
+        return dataFile;
+    }
+
+//this method is used to ask users if they want to continue create histogram
+//Parameters:
+// -scanner console: use to let user create if they will continue
+    public static boolean keepOn(Scanner console) {
+        System.out.println();
+        System.out.println("Histogram Created!");
+        System.out.print("Do you want to create another histogram? ");
+        String answer = console.next();
+        return answer.equalsIgnoreCase("yes");
+    }
+
+//this methos is used to find max index in the file
+//Parameters:
+// -Array data: this is an int Array to find max index from the array
+    public static int findMaxIndex(int[] data) {
+        int maxNum = data[0];
+        int indexMax = 0;
+        for (int i = 1; i <= data.length - 1; i++) {
+            if (data[i] > maxNum) {
+                maxNum = data[i];
+                indexMax = i;
+            }
+        }
+        return indexMax;
+    }
+
+//this method is used to get counts
+//Parameters:
+// -Array data: this is an int Array to find counts from the array
+    public static int[] getCounts(int[] data) {
+        int indexMax = findMaxIndex(data);
+        int maxNum = data[indexMax];
+        int[] counts = new int[maxNum + 1];
+        for (int i = 0; i < data.length; i++) {
+            int num = data[i];
+            counts[num]++;
+        }
+        return counts;
+    }
+
+//this method is used to create histogram
+//Parameters:
+// -Array data: this is an int Array to show the content of array
+// -PrintStream output: this is used to create a new file
+    public static void printHistogram(int[] count, PrintStream output) {
+        for (int i = 0; i < count.length; i++) {
+            output.print(i + "| ");
+            for (int j = 0; j < count[i]; j++) {
+                output.print("*");
+            }
+            output.println();
+        }
+    }
+
+//this method is used to print statistics
+//Parameters:
+// -Array data: this is an int Array to find the num of value from the content
+// -Array counts: this is an int Array to find Mode
+// -PrintStream output: this is used to create a new file
+
+    public static void printStats(int[] data, int[] counts, PrintStream output) {
+        output.println();
+        output.println("Num. Values: " + data.length);
+        output.println("Mean: " + meanCal(data));
+        output.println("Mode: " + findMaxIndex(counts));
+    }
+
+//this method is used to calculate mean
+//Parameters:
+// -Array data: this is an int Array to find the num of value from the content
+    public static double meanCal(int[] data) {
+        double sum = 0;
+        for (int i = 0; i < data.length; i++) {
+            sum = sum + data[i];
+        }
+        double mean = sum / data.length;
+        return mean;
+    }
+}
