@@ -1,0 +1,104 @@
+//Amber Lu
+
+//this class is Shapes
+//in this class i made serval shape by turtle
+import java.util.*;
+
+public class Shapes {
+    public static void main(String[] args) {
+        // 2 method calls for Task 1
+        Turtle t = new Turtle();
+        drawRectangle(t,100,80);
+        drawPentagon(t,50);
+
+        // 2 method calls for Task 2
+        Random rand= new Random();
+        randomRegularShapes(t,rand,20,150);
+        randomChanges(t,rand,10,25.5,5,50);
+        
+
+        // 1 method call for Task 3
+        circle(t,5,60);
+        triangle(t,120,600);
+    }
+
+    // TODO: Implement your methods here:
+public static void drawRectangle(Turtle t, int width, int height){
+    for(int i=1; i<=2; i++){
+        t.forward(width);
+        t.left(90);
+        t.forward(height);
+        t.left(90);
+    }
+}    // Task 1 - drawRectangle method
+
+public static void drawPentagon(Turtle t, int length){
+    t.up();
+    t.forward(300);
+    t.down();
+
+    for(int j=1; j<=5; j++){
+        t.right(72);
+        t.forward(100);
+    }
+}    // Task 1 - Method which draws any shape of your choosing
+
+public static void randomRegularShapes(Turtle t, Random rand, int numShapes, int maxSize){
+    t.up();
+    t.forward(300);
+    t.down();
+    int numEdges= 5;
+    for(int i=1; i<=numShapes; i++){
+        int randInt = rand.nextInt(maxSize)+1;
+        for(int j=1; j<=numEdges; j++){
+            t.right(72);
+            t.forward(randInt);
+        } 
+        
+        t.up();
+        t.forward(100);
+        t.right(100);
+        t.down();
+    }
+}    // Task 2 - Choice A: Random Regular Shapes
+
+public static void randomChanges(Turtle t, Random rand, int numEdges, double maxChange, int angle, int sideLength){
+    t.up();
+    t.forward(500);
+    t.down();
+
+    for(int i=1; i<=numEdges; i++){
+        for(int j=1; j<=8; j++){
+            t.forward(sideLength);
+            t.right(135);
+        }
+        double randomChange = maxChange * rand.nextDouble();
+        t.up();
+        t.forward(50);
+        t.right(randomChange + angle);
+        t.down();
+    }
+}// Task 2 - Choice B: Random Changes
+
+public static void circle(Turtle t,int angle, int length){
+    t.up();
+    t.forward(2000);
+    t.down();
+    t.penColor("red");
+    for(int i=1;i<=90; i++){
+        t.forward(length);
+        t.left(angle);
+    }
+}
+
+public static void triangle(Turtle t, int angle, int edge){
+    t.left(90);
+    t.penColor("blue");
+    for(int i=1; i<=3; i++){
+        t.forward(edge);
+        t.right(angle);
+    }
+}
+}
+// Task 3 - Method which draws your picture
+
