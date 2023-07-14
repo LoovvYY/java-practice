@@ -1,0 +1,20 @@
+// Amber Lu
+
+//This class is to print several "*" in a triangel shape
+public class Triangle {
+    public static void main(String[] args) {
+        printTriangle(5);
+    }
+
+//this method is used to do the forloop and print the triangel
+//parameter: the number of stars
+    public static void printTriangle(int numStars) {
+        // TODO: Write your code here
+        for(int i=numStars; i>0; i--){
+            for(int j=i; j>0; j--){
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+    }
+}
