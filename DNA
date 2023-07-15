@@ -1,0 +1,58 @@
+// Amber Lu
+
+//this class is used to find the most common letter in String of DNA
+import java.util.*;
+
+public class DNA {
+    public static void main(String[] args) {
+        String dna = "ATGCGCACTATGGTAG";
+        String mostCommon = mostCommonNucleotide(dna);
+        System.out.println(dna + " => " + mostCommon);
+    }
+
+    //this method is used to find the array of repetition times of each DNA letter
+    //in given DNA
+    //parameter:
+    //String dna: a string that contain the given DNA, each letter is a nucleotide
+    //String nucleotides: a string represent different kind of nucleotide in each letter
+    //return: the num of times for each Nucleotide in an array
+    public static int[] numChar(String dna, String nucleotides){
+        int[] num = new int[nucleotides.length()];
+        for(int i =0; i< dna.length(); i++) {
+            int index = nucleotides.indexOf(dna.charAt(i));
+            num[index]++;
+        }
+        return num;
+    }
+
+    //this method allows to call a method and find most common Nucleotide
+    //if there are several different nucleotides with the same repetition times
+    // then choose the first one
+    //parameter:
+    //String dna: a string that contain the given DNA, each letter is a nucleotide
+    //return: return the first nucleotide which has the largest times
+    public static String mostCommonNucleotide(String dna) {
+        String nucleotides = "ACGT";
+        int[] num = numChar(dna, nucleotides);
+        int maxTime = getMaxIndex(num);
+        return String.valueOf(nucleotides.charAt(maxTime));
+    }
+
+    //this method allows to find the max number in arrey and get the index
+    //and than if there are two different index with the same max number
+    //then choose the front one
+    //parameter:
+    //int[] num: the array which contains the repetition time 
+    //return: the index of max number in array
+    public static int getMaxIndex(int[] num){
+        int max = 0;
+        int maxTime = 0;
+        for (int i = 0; i < num.length; i++) {
+            if (num[i] > max) {
+                max = num[i];
+                maxTime = i;
+            }
+        }
+        return maxTime;
+    }
+}
