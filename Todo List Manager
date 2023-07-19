@@ -1,0 +1,160 @@
+// Amber Lu
+
+//this class is named TodoListManager. It record users' todo list and allow them to add,
+//remove items and create doc and read doc
+
+import java.util.*;
+import java.io.*;
+
+public class TodoListManager {
+    public static final boolean EXTENSION_FLAG = true;
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner console = new Scanner(System. in);
+        List<String> todos = new ArrayList<>();
+        List<String> completedTodo = new ArrayList<>();
+        System.out.println("Welcome to your TODO List Manager!");
+        String choice = "";
+        do{
+            choice = choiceTodos(console, choice);
+            if(choice.equalsIgnoreCase("A")){
+                addItem(console, todos);
+            }else if (choice.equalsIgnoreCase("M")){
+                markItemAsDone(console, todos,completedTodo);
+            }else if(choice.equalsIgnoreCase("L")){
+                loadItems(console, todos);
+            }else if(choice.equalsIgnoreCase("S")){
+                saveItems(console, todos);
+            }else if(choice.equalsIgnoreCase("S")&&EXTENSION_FLAG){
+                showCompletedItems(console, completedTodo);
+            }else if(!(choice.equalsIgnoreCase("Q"))){
+                System.out.println("Unknown input: " + choice);
+            }
+
+            if(!choice.equalsIgnoreCase("Q")){
+                printTodos(todos);
+            }
+        }while(!choice.equalsIgnoreCase("Q"));
+    }
+
+    public static String choiceTodos(Scanner console, String choice){
+        System.out.println("What would you like to do?");
+        if(EXTENSION_FLAG){
+            System.out.print("(A)dd TODO, (M)ark TODO as done, (L)oad TODOs, (S)ave TODOs, " +
+                    "(Q)uit? ,(S)how completed items list");
+        }else{
+            System.out.print("(A)dd TODO, (M)ark TODO as done, (L)oad TODOs, (S)ave TODOs, " +
+                    "(Q)uit? ");
+        }
+        choice = console.nextLine();
+        return choice;
+    }
+
+    //this method is used to print the todo list as a result to users
+//parameter:
+// - List todos: a List of Strings that contains all the todo items to be printed
+    public static void printTodos(List<String> todos) {
+        System.out.println("Today's TODOs:");
+        if(todos.isEmpty()){
+            System.out.println("  You have nothing to do yet today! Relax!");
+        }
+        for (int i = 0; i < todos.size(); i++) {
+            System.out.println(" " + (i+1) + ": " + todos.get(i));
+        }
+    }
+
+    //this method is used to allow users add some items they want and ask them the location of
+//adding items
+//parameter:
+// -scanner console: the scanner allow users to type the item
+// -List todos: a List of Strings that contains all the todo items to be printed
+    public static void addItem(Scanner console, List<String> todos) {
+        System.out.print("What would you like to add? ");
+        String toDo = console.nextLine();
+        if(todos.size()>0){
+            System.out.print("Where in the list should it be (1-" + (todos.size()+1) + ")? " +
+                    "(Enter for end): ");
+            String input = console.nextLine();
+            if(!(input.length() == 0)){
+                int num = Integer.parseInt(input);
+                todos.add(num-1, toDo);
+            }else{
+                todos.add(toDo);
+            }
+        }else{
+            todos.add(toDo);
+        }
+    }
+
+    //this method is used to allow users to mark the list they already finished and remove it from list
+//parameter:
+// -scanner console: the scanner allow users to type the item
+// -List todos: a List of Strings that contains all the todo items to be printed
+    public static void markItemAsDone(Scanner console, List<String> todos, List<String> completedTodo) {
+        if(todos.isEmpty()){
+            System.out.println("All done! Nothing left to mark as done!");
+        }else{
+            System.out.print("Which item did you complete (1-" + todos.size() + ")? ");
+            String input = console.nextLine();
+            int num = Integer.parseInt(input);
+            String completedItem = todos.get(num-1);
+            todos.remove(completedItem);
+            completedTodo.add(completedItem);
+        }
+
+
+    }
+
+    //this method is used to ask users to open a created file and let the list in file occupied list
+//parameter:
+// -scanner console: the scanner allow users to type the item
+// -List todos: a List of Strings that contains all the todo items to be printed
+    public static void loadItems(Scanner console, List<String> todos)
+            throws FileNotFoundException {
+        // TODO: Your Code Here
+        System.out.print("File name? ");
+        String name = console.nextLine();
+        while(!(todos.isEmpty())){
+            todos.remove(0);
+        }
+        Scanner fileScan = new Scanner(new File(name));
+        while(fileScan.hasNextLine()){
+            String line = fileScan.nextLine();
+            todos.add(line);
+        }
+    }
+
+    //this method is used to create a file and put all the list into the file
+//parameter:
+// -scanner console: the scanner allow users to type the item
+// -List todos: a List of Strings that contains all the todo items to be printed
+    public static void saveItems(Scanner console, List<String> todos)
+            throws FileNotFoundException {
+        // TODO: Your Code Here
+        System.out.print("File name?" );
+        String name = console.nextLine();
+        PrintStream output = new PrintStream(name);
+        for (int i = 0; i < todos.size(); i++) {
+            output.println(todos.get(i));
+        }
+    }
+
+    //this method allows users to see the list of todo they marked which means the item they
+    // already completed
+//parameter:
+// -scanner console: the scanner allow users to type the item
+// -List completedTodo: a list of the item they already marked
+    public static void showCompletedItems(Scanner console, List<String> completedTodo){
+        if(completedTodo.isEmpty()){
+            System.out.println("Fighting! The more you do, the more you can get!");
+        }else{
+            System.out.print("Do you want to see the list of completed TODOs? ");
+            String choice = console.nextLine();
+            if(choice.equalsIgnoreCase("yes")){
+                System.out.println("List of completed TODOs:");
+                for(int i =0; i< completedTodo.size(); i++){
+                    System.out.println(" " + (i+1) + ": " + completedTodo.get(i));
+                }
+            }
+        }
+    }
+}
