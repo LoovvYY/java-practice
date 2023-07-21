@@ -1,0 +1,170 @@
+// Amber Lu
+
+//This class is to allow users to use to play music. This application allows the user to add music,
+//play music, print the music already played, clear all the play history and select the location
+//to delete the history music.
+
+import java.util.*;
+
+public class MusicPlaylist {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        Queue<String> waitingToPlayMusicList = new LinkedList<>();
+        Stack<String> historyList = new Stack<>();
+        System.out.println("Welcome to the CSE 122 Music Playlist!");
+        String choice = "";
+        do {
+            System.out.println("(A) Add song");
+            System.out.println("(P) Play song");
+            System.out.println("(Pr) Print history");
+            System.out.println("(C) Clear history");
+            System.out.println("(D) Delete from history");
+            System.out.println("(Q) Quit");
+            System.out.println();
+            System.out.print("Enter your choice: ");
+            choice = console.nextLine();
+
+            if (choice.equalsIgnoreCase("A")) {
+                addMusic(console, waitingToPlayMusicList);
+            } else if (choice.equalsIgnoreCase("P")) {
+                playMusic(historyList, waitingToPlayMusicList);
+            } else if (choice.equalsIgnoreCase("Pr")) {
+                printHistory(historyList);
+            } else if (choice.equalsIgnoreCase("C")) {
+                clearHistory(historyList);
+            } else if (choice.equalsIgnoreCase("D")) {
+                deleteHistory(console, historyList);
+            } else if (!(choice.equalsIgnoreCase("Q"))) {
+                System.out.println();
+            }
+        } while (!(choice.equalsIgnoreCase("Q")));
+
+    }
+
+    /**
+     * Adds a song to the waitingToPlayMusicList
+     *
+     * @param console - the Scanner object to read user input
+     * @param waitingToPlayMusicList - the Queue of all the songs waiting for play
+     */
+    public static void addMusic(Scanner console, Queue<String> waitingToPlayMusicList) {
+        System.out.print("Enter song name: ");
+        String musicName = console.nextLine();
+        waitingToPlayMusicList.add(musicName);
+        System.out.println("Successfully added " + musicName);
+        System.out.println();
+        System.out.println();
+    }
+
+    /**
+     * play music in waitingToPlayMusicList and put the music into historyList
+     *
+     * @param waitingToPlayMusicList   - the Queue of all the songs waiting for play
+     * @param historyList - the stack of the song already played
+     * @throws IllegalArgumentException when the waitingToPlayMusicList is empty which means there
+     * is no music added in the list
+     */
+    public static void playMusic(Stack<String> historyList, Queue<String> waitingToPlayMusicList) {
+        if (waitingToPlayMusicList.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        String playing = waitingToPlayMusicList.remove();
+        historyList.push(playing);
+        System.out.println("Playing song: " + playing);
+        System.out.println();
+        System.out.println();
+    }
+
+    /**
+     *allow users to print music history
+     * 
+     * @param historyList - the stack of the song already played
+     * @throws IllegalStateException when the historyList is empty 
+     * which means there is no music in the list
+     */
+    public static void printHistory(Stack<String> historyList) {
+        if (historyList.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        Stack<String> popList = new Stack<>();
+        int size = historyList.size();
+        for (int i = 0; i < size; i++) {
+            String pop = historyList.pop();
+            popList.push(pop);
+            System.out.println("    " + pop);
+
+        }
+        moveStack(popList, historyList, size);
+        System.out.println();
+        System.out.println();
+    }
+
+    /**
+     * allow users to clear the music history
+     *
+     * @param historyList - the stack of the song already played
+     */
+    public static void clearHistory(Stack<String> historyList) {
+        historyList.clear();
+        System.out.println();
+    }
+
+    /**
+     * allow users to delete music history and choose which they want to delete
+     * when they type the postive number they can delete music from top of the history
+     * when they type the negative number they can delete music from the latest of the history
+     *
+     * @param console - the Scanner object to read user input
+     * @param historyList- the stack of the song already played
+     * @throws IllegalArgumentException when the users want to delete(the absolute number of input)
+     *is more than the size of history
+     *
+     */
+    public static void deleteHistory(Scanner console, Stack<String> historyList) {
+        System.out.println("A positive number will delete from recent history.");
+        System.out.println("A negative number will delete from the beginning of history.");
+        System.out.print("Enter number of songs to delete: ");
+        String input = console.nextLine();
+        int num = Integer.parseInt(input);
+        if (historyList.size() < Math.abs(num)) {
+            throw new IllegalArgumentException();
+        }
+        Stack<String> popList = new Stack<>();
+        if (num > 0) {
+            popN(historyList, num);
+        } else if (num < 0) {
+            int absNum = Math.abs(num);
+            int size = historyList.size();
+            moveStack(historyList,popList, size-absNum);
+            popN(historyList, absNum);
+            moveStack(popList, historyList, size-absNum);
+        }
+        System.out.println();
+    }
+
+    /**
+     * pop a limited number of String from the stack
+     *
+     * @param stack - the stack to pop
+     * @param size - the number of String to pop
+     */
+    public static void popN(Stack<String> stack, int size){
+        for(int i =0; i< size; i++){
+            stack.pop();
+        }
+    }
+
+    /**
+     * pop a String from sendStack and push into the receiveStack in size times
+     *
+     * @param sendStack - the stack should pop string
+     * @param receiveStack - the stack should push into string
+     * @param size - the number of times should pop and push
+     */
+    public static void moveStack(Stack<String> sendStack, Stack<String> receiveStack, int size){
+        for(int i =0; i< size; i++){
+            receiveStack.push(sendStack.pop());
+        }
+    }
+
+}
