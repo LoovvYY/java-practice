@@ -1,0 +1,122 @@
+// Amber Lu
+
+// This class is used to get pixel from the original image and use four methods to
+// manipulate and add filter on the image then save as new images 
+
+import java.util.*;
+import java.awt.*;
+
+public class ImageManipulation {
+    public static void main(String[] args) {
+        Picture pic = new Picture("suzzallo.jpg");
+        Color[][] pixels = pic.getPixels();
+        Color[][] newPixels = pic.getPixels();
+
+        increaseColor(pixels);
+        pic.setPixels(pixels);
+        pic.save("creative1.jpg");
+
+        negative(pixels);
+        pic.setPixels(pixels);
+        pic.save("creative2.jpg");
+
+        negativeRectangle(pixels,180 , 620, 370, 310);
+        pic.setPixels(pixels);
+        pic.save("creative3.jpg");
+
+        mirrorRight(newPixels);
+        pic.setPixels(newPixels);
+        pic.save("creative4.jpg");
+    }
+
+// This method is used to add a purple filter onn the original image and save as new image
+// Paramter:
+// param pixels - a 2D array of Color objects representing the pixels of the image
+    public static void increaseColor(Color[][] pixels) {
+        for (int i = 0; i < pixels.length; i++) {
+            for (int j = 0; j < pixels[i].length; j++) {
+                Color originalColor = pixels[i][j];
+                int red = originalColor.getRed();
+                int green = originalColor.getGreen();
+                int blue = originalColor.getBlue();
+                Color newColor = new Color(Math.min(red + 63, 255), Math.min(green + 13, 255), 
+                                           Math.min(blue + 94, 255));
+                pixels[i][j] = newColor;
+            }
+        }
+    }
+
+// This method is used to add a new filter on the picture that saved at last method
+// and the new filter is the inverse color with the one in the first method
+// Paramter:
+// param pixels - a 2D array of Color objects representing the pixels of the image
+    public static void negative(Color[][] pixels) {
+        for(int i = 0; i< pixels.length; i++){
+            for(int j = 0; j< pixels[i].length; j++){
+                Color originalColor = pixels[i][j];
+                int red = originalColor.getRed();
+                int green = originalColor.getGreen();
+                int blue = originalColor.getBlue();
+                Color negativeColor = new Color(255 - red, 255 - green, 255 - blue);
+                pixels[i][j] = negativeColor;
+            }
+        }
+    }
+
+// This is the method to used to add new filter at a limted range of pixel on the picture that
+// saved at the second method, named creative2
+// Paramter:
+// param pixels - a 2D array of Color objects representing the pixels of the image
+// throws IllegalArgumentException: 
+// if the col1, row1, col2 and row2 are not in the range of pixel
+    public static void negativeRectangle(Color[][] pixels, int row1, 
+                                         int col1, int row2, int col2) {
+        if (row1 < 0 || col1 < 0 || row2 < 0 || col2 < 0 ||
+            row1 >= pixels.length || col1 >= pixels[0].length || 
+            row2 >= pixels.length || col2 >= pixels[0].length) {
+            throw new IllegalArgumentException();
+        }
+        int rowMax;
+        int rowMin;
+        int colMax;
+        int colMin;
+        if(row1 > row2){
+            rowMax = row1;
+            rowMin = row2;
+        }else{
+            rowMax = row2;
+            rowMin = row1;
+        }
+        if(col1 > col2){
+            colMax = col1;
+            colMin = col2;
+        }else{
+            colMax = col2;
+            colMin = col1;
+        }
+        for(int row = rowMin; row< rowMax; row++){
+            for(int col = colMin; col< colMax; col++){
+                Color originalColor = pixels[row][col];
+                int red = originalColor.getRed();
+                int green = originalColor.getGreen();
+                int blue = originalColor.getBlue();
+                Color negativeColor = new Color(255 - red, 255 - green, 255 - blue);
+                pixels[row][col] = negativeColor;
+            }
+        }
+    }
+
+// Mirrors the right half of the image onto the left half, effectively creating a symmetrical image
+// Paramter:
+// param pixels - a 2D array of Color objects representing the pixels of the image
+    public static void mirrorRight(Color[][] pixels) {
+        int widthPic = pixels[0].length;
+        int lengthPic = pixels.length;
+        for(int i = 0; i< lengthPic; i++){
+            for(int j =widthPic * 1/2; j < widthPic; j++){
+                Color originalColor = pixels[i][j];
+                pixels[i][widthPic-j-1] = originalColor;
+            }
+        }
+    }
+}
