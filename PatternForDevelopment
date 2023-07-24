@@ -1,0 +1,75 @@
+import java.util.ArrayList;
+import java.util.*;
+
+public class PatternFor {
+    public static final String GREEN = "🟩";
+    public static final String YELLOW = "🟨";
+    public static final String GRAY = "⬜";
+
+    public static void main(String[] args) {
+        System.out.println(patternFor("abbey", "bebop"));
+        System.out.println(patternFor("abbey", "ether"));
+        System.out.println(patternFor("abbey", "keeps"));
+        System.out.println(patternFor("bebop", "abbey"));
+    }
+
+    public static String patternFor(String word, String guess) {
+        Map<String, Integer> wordMap = new HashMap<>();
+        List<String> guessList = new ArrayList<>();
+        for(int i =0; i< guess.length();i++){
+            String oneCharWord = String.valueOf(word.charAt(i));
+            if(!(wordMap.containsKey(oneCharWord))){
+                wordMap.put(oneCharWord, 1);
+            }else{
+                int times = wordMap.get(oneCharWord);
+                times++;
+                wordMap.put(oneCharWord, times);
+            }
+        }
+
+        for(int i =0; i< guess.length(); i++){
+            String guessChar = String.valueOf(guess.charAt(i));
+            guessList.add(guessChar);
+        }
+
+        for(int i =0; i< guess.length(); i++) {
+            String oneCharGuess = String.valueOf(guess.charAt(i));
+            String oneCharWord = String.valueOf(word.charAt(i));
+            if (oneCharWord.equals(oneCharGuess)) {
+                guessList.set(i, GREEN);
+                int times = wordMap.get(oneCharGuess);
+                times--;
+                wordMap.put(oneCharGuess, times);
+            }
+        }
+        System.out.println(wordMap);
+
+        for(int i =0; i< guess.length(); i++){
+            String elseChar = String.valueOf(guess.charAt(i));
+            if(!(guessList.get(i).equals(GREEN))){
+                if(wordMap.containsKey(elseChar))  {
+                    if(wordMap.get(elseChar) == 0){
+                        guessList.set(i,GRAY);
+                        int times = wordMap.get(elseChar);
+                        times--;
+                        wordMap.put(elseChar, times);
+                    }else{
+                        guessList.set(i,YELLOW);
+                        int times = wordMap.get(elseChar);
+                        times--;
+                        wordMap.put(elseChar, times);
+                    }
+                }else{
+                    guessList.set(i, GRAY);
+                }
+            }
+
+        }
+        String charColor ="";
+        for(int i = 0;i < guessList.size(); i++){
+            charColor = charColor + guessList.get(i);
+        }
+        return charColor;
+
+    }
+}
