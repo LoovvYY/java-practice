@@ -1,0 +1,231 @@
+// Amber Lu
+
+//this class allows users to guess a word and compare with words in regulated dictionarywith 
+//the length they choose and in the process of the code,
+// it will return the pattern which is compared with the guess words and the words 
+//in dictionary, also the reuslt is the one contain words which has the largest same pattern
+//in addition, the green pattern means the character has same location with the guess
+//yellow pattern means there is a same character in whole word with different location
+//gray pattern means there is no same character 
+//in the end, when users try the correct words
+//it will return the whole process of the guess
+
+import java.util.*;
+import java.io.*;
+
+public class Absurdle  {
+    public static final String GREEN = "🟩";
+    public static final String YELLOW = "🟨";
+    public static final String GRAY = "⬜";
+
+    // [[ ALL OF MAIN PROVIDED ]]
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner console = new Scanner(System.in);
+        System.out.println("Welcome to the game of Absurdle.");
+
+        System.out.print("What dictionary would you like to use? ");
+        String dictName = console.next();
+
+        System.out.print("What length word would you like to guess? ");
+        int wordLength = console.nextInt();
+
+        List<String> contents = loadFile(new Scanner(new File(dictName)));
+        Set<String> words = pruneDictionary(contents, wordLength);
+
+        List<String> guessedPatterns = new ArrayList<>();
+        while (!isFinished(guessedPatterns)) {
+            System.out.print("> ");
+            String guess = console.next();
+            String pattern = record(guess, words, wordLength);
+            guessedPatterns.add(pattern);
+            System.out.println(": " + pattern);
+            System.out.println();
+        }
+        System.out.println("Absurdle " + guessedPatterns.size() + "/∞");
+        System.out.println();
+        printPatterns(guessedPatterns);
+    }
+
+    // [[ PROVIDED ]]
+    // Prints out the given list of patterns.
+    // - List<String> patterns: list of patterns from the game
+    public static void printPatterns(List<String> patterns) {
+        for (String pattern : patterns) {
+            System.out.println(pattern);
+        }
+    }
+
+    // [[ PROVIDED ]]
+    // Returns true if the game is finished, meaning the user guessed the word. Returns
+    // false otherwise.
+    // - List<String> patterns: list of patterns from the game
+    public static boolean isFinished(List<String> patterns) {
+        if (patterns.isEmpty()) {
+            return false;
+        }
+        String lastPattern = patterns.get(patterns.size() - 1);
+        return !lastPattern.contains("⬜") && !lastPattern.contains("🟨");
+    }
+
+    // [[ PROVIDED ]]
+    // Loads the contents of a given file Scanner into a List<String> and returns it.
+    // - Scanner dictScan: contains file contents
+    public static List<String> loadFile(Scanner dictScan) {
+        List<String> contents = new ArrayList<>();
+        while (dictScan.hasNext()) {
+            contents.add(dictScan.next());
+        }
+        return contents;
+    }
+
+    //this method is used to find the words in given dictionary with in the give length
+//Parameter:
+//- contents: the list that contain the whole words scan from given file
+//- wordLength: the length that user input to guess
+//throws IllegalArgumentException: 
+//if the wordsLength is less than 1
+//return:
+//- set : a set that contain the words with required length
+    public static Set<String> pruneDictionary(List<String> contents, int wordLength) {
+        if(wordLength < 1){
+            throw new IllegalArgumentException();
+        }
+        Set<String> words = new HashSet<>();
+        for(String content : contents){
+            int lengthContent = content.length();
+            if(lengthContent == wordLength){
+                words.add(content);
+            }
+        }
+        return words;
+    }
+
+    //this method allows to find the pattern with the words which has same pattern
+//and put all words together as a set
+//then related pattern as key with words set as value
+//Parameter:
+//- words: a set that contain the words with required length
+//- guess: the word that user input to guess
+//return:
+// - map : a map which include patterns as key and words with same pattern as value
+    public static Map<String, Set<String> > getPattern(Set<String> words, String guess){
+        Map<String, Set<String>> patternCharMap = new TreeMap<>();
+        for(String compareWord: words){
+            String pattern = patternFor(compareWord, guess);
+            if(!(patternCharMap.containsKey(pattern))){
+                patternCharMap.put(pattern, new HashSet<>());
+            }
+            patternCharMap.get(pattern).add(compareWord);
+        }
+        return patternCharMap;
+    }
+
+    //this method allows to find the pattern which has the largest size of related words set 
+//among all the patterns
+//in this method, the words set will change to be differernt words with the set inpast time
+//it will include a smaller range of words when this method work 
+//Parameter:
+//- guess: the word that user input to guess
+//- words: a set that contain the words with required length
+// when every time this method work, this set will update
+//- wordLength: the length that user input to guess
+//throws IllegalArgumentException: 
+//if the guess words' length not equal to words length
+//if words set is isEmpty
+//return:
+//- stirng : the pattern which has the largets size of words
+    public static String record(String guess, Set<String> words, int wordLength) {
+        if(!(guess.length() == wordLength) || words.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+        
+        int maxLength = 0;
+        String maxCharType = "";
+        Map<String, Set<String> > patternCharMap = getPattern(words, guess);
+        for(String patterns: patternCharMap.keySet()){
+            int size = patternCharMap.get(patterns).size();
+            if(size > maxLength){
+                maxLength = size;
+                maxCharType = patterns;
+            }
+        }
+
+        words.clear();
+        for(String newWord : patternCharMap.get(maxCharType)){
+            words.add(newWord);
+        }
+        return maxCharType;
+    }
+
+    //this method allows to mark each character as a pattern when the words which users guess 
+//compare with the given words from dictionary
+//it will mark the character has same location with the guess as green pattern
+//and mark the character has the same one in whole word guess with different location but didn't 
+//be used for green pattern check ad yellow pattern
+//and mark the character without same character or has the same one in differnt location 
+//but be used for green patter check as gray pattern
+//Parameter:
+//- guess: the word that user input to guess
+//- words: a set that contain the words with required length
+//return:
+//- Stirng : the pattern for each character
+    public static String patternFor(String word, String guess) {
+        Map<Character, Integer> wordMap = new HashMap<>();
+        List<String> guessList = new ArrayList<>();
+        for(int i =0; i< guess.length();i++){
+            Character oneCharWord = word.charAt(i);
+            if(!(wordMap.containsKey(oneCharWord))){
+                wordMap.put(oneCharWord, 1);
+            }else{
+                int times = wordMap.get(oneCharWord);
+                times++;
+                wordMap.put(oneCharWord, times);
+            }
+        }
+
+        for(int i =0; i< guess.length(); i++){
+            String guessChar = String.valueOf(guess.charAt(i));
+            guessList.add(guessChar);
+        }
+
+        for(int i =0; i< guess.length(); i++) {
+            Character oneCharGuess = guess.charAt(i);
+            String oneCharWord = String.valueOf(word.charAt(i));
+            if (oneCharWord.equals(oneCharGuess + "")) {
+                guessList.set(i, GREEN);
+                int times = wordMap.get(oneCharGuess);
+                if(!(times == 0)){
+                    times--;
+                }
+                wordMap.put(oneCharGuess, times);
+            }
+        }
+
+        for(int i =0; i< guess.length(); i++){
+            Character elseChar = guess.charAt(i);
+            if(!(guessList.get(i).equals(GREEN))){
+                if(wordMap.containsKey(elseChar))  {
+                    if(wordMap.get(elseChar) == 0){
+                        guessList.set(i,GRAY);
+                        int times = wordMap.get(elseChar);
+                        wordMap.put(elseChar, times);
+                    }else{
+                        guessList.set(i,YELLOW);
+                        int times = wordMap.get(elseChar);
+                        times--;
+                        wordMap.put(elseChar, times);
+                    }
+                }else{
+                    guessList.set(i, GRAY);
+                }
+            }
+
+        }
+
+        String charColor ="";
+        for(int i = 0;i < guessList.size(); i++){
+            charColor = charColor + guessList.get(i);
+        }
+        return charColor;
+    }
+}
