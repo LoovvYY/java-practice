@@ -1,0 +1,30 @@
+import java.util.*;
+import java.io.*;
+
+public class TweetBotTest {
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner input = new Scanner(new File("tweets.txt")); 
+        List<String> tweets = new ArrayList<>();
+        while (input.hasNextLine()) { 
+        tweets.add(input.nextLine());
+        }
+
+        TweetBot bot = new TweetBot(tweets); 
+        System.out.println(bot.nextTweet());
+        System.out.println(bot.nextTweet());
+        System.out.println(bot.nextTweet());
+        bot. removeTweet("Look at this meme :O");
+        System.out.println(bot.nextTweet());
+        System.out.println(bot.nextTweet());
+
+
+        TwitterTrends trends = new TwitterTrends(bot);
+        System.out.println(trends.getMostFrequentWord());
+        bot.addTweet("fuck");
+        bot.addTweet("fuck");
+        bot.addTweet("fuck");
+        bot.addTweet("fuck");
+        trends.offensiveWordsStat();
+
+    }
+}
