@@ -1,0 +1,29 @@
+import java.util.*;
+import java.io.*;
+
+public class TwitterMain {
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner input = new Scanner(new File("tweets.txt")); // Make Scanner over tweet file
+        List<String> tweets = new ArrayList<>();
+        while (input.hasNextLine()) { // Add each tweet in file to List
+            tweets.add(input.nextLine());
+        }
+
+        TweetBot bot = new TweetBot(tweets); // Create TweetBot object with list of tweets
+        System.out.println(bot.numTweets());
+        bot.addTweet("music123");
+        System.out.println(bot.nextTweet());
+        bot. removeTweet("Look at this meme :O");
+        bot.reset();
+
+        TwitterTrends trends = new TwitterTrends(bot); // Create TwitterTrends object
+        System.out.println(trends.getMostFrequentWord());
+        bot.addTweet("fuck");
+        bot.addTweet("fuck");
+        bot.addTweet("fuck");
+        bot.addTweet("fuck");
+        trends.offensiveWordsStat();
+
+
+    }
+}
