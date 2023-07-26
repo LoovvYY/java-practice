@@ -1,0 +1,73 @@
+// Amber Lu
+
+import java.util.*;
+
+public class TwitterTrends {
+    public static final String[] OFFENSIVEWORDS = {"shit", "fuck", "bitch"};
+    private TweetBot bot;
+    private Map<String, Integer> tweetsFrequentMap;
+
+    //this constructor allows to mark the reference of tweet bot
+    //and initialize the tweetsFrequentMap
+    //Parameter:
+    //TweetBot bot: the given bot to analysize the trends
+    public TwitterTrends(TweetBot bot){
+        this.bot = bot;
+        tweetsFrequentMap = new HashMap<>();
+    }
+
+    //this method allows to get the most frequent words that appear in the tweet list
+    //return:
+    //the word which is most frequent to appear in the list
+    public String getMostFrequentWord(){
+        updateFrequentMap();
+        int maxTimes =0;
+        String frequentWord = "";
+        for(String key : tweetsFrequentMap.keySet()){
+            if(maxTimes < tweetsFrequentMap.get(key)){
+                maxTimes = tweetsFrequentMap.get(key);
+                frequentWord = key;
+            }
+        }
+        return frequentWord;
+    }
+
+    //this method is to create a map which contain the words as key and frequency times as value
+    public void updateFrequentMap(){
+        tweetsFrequentMap.clear();
+        for(int i =0; i< bot.numTweets() ; i++){
+            String tweetLine = bot.nextTweet();
+            Scanner lineScan = new Scanner(tweetLine);
+            while(lineScan.hasNext()){
+                String tweetWord = lineScan.next();
+                String tweetWordLowerCase = tweetWord.toLowerCase();
+                if(!(tweetsFrequentMap.containsKey(tweetWordLowerCase))){
+                    tweetsFrequentMap.put(tweetWordLowerCase, 1);
+                }else{
+                    int times = tweetsFrequentMap.get(tweetWordLowerCase);
+                    times++;
+                    tweetsFrequentMap.put(tweetWordLowerCase, times);
+                }
+            }
+        }
+    }
+
+    //this method allows to find the offensive words in the list and create a map 
+    //to show the frequency
+    public void offensiveWordsStat(){
+        updateFrequentMap();
+        Map<String, Integer> offensiveWordsMap = new HashMap<>();
+        for(String words : OFFENSIVEWORDS ){
+            if(tweetsFrequentMap.containsKey(words)){
+                offensiveWordsMap.put(words, tweetsFrequentMap.get(words));
+            }else{
+                offensiveWordsMap.put(words,0);
+            }
+        }
+        System.out.println("After the research for all of the tweet bot, " +
+                "the offensive level is showing below: ");
+        System.out.println(offensiveWordsMap);
+    }
+
+
+}
