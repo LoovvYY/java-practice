@@ -1,0 +1,21 @@
+import java.util.*;
+
+//this class is a implement for the interface named Check
+//this class is allows to find a blank in the given line
+public class BlankPrintlnCheck implements Check {
+
+//this method allows to check if the given the line has the blank println 
+//parameter:
+//String line: a string represents a given code line
+//int lineNumber: the number of the line
+//return:
+//if the given linen include blanck println, than return Optioanl<Error>
+//if the given linen not include blanck println, than return Optioanl<Error>
+    public Optional<Error> lint(String line, int lineNumber) {
+        if (line.contains("System.out.println(\"\")")) {
+            return Optional.of(new Error(3, lineNumber, "this line contains blank println"));
+        } else {
+            return Optional.empty();
+        }
+    }
+}
