@@ -1,0 +1,39 @@
+import java.util.*;
+import java.io.*;
+
+//this class is allows to check each of the line in given file
+//and find the error according to the Error method than collect into the list
+public class Linter {
+    private List<Check> checks;
+
+//this construction allows to initialize the list
+    public Linter(List<Check> checks){
+        this. checks = checks;
+    }
+
+//this method is allows to check each line of the given file 
+//and collect the error
+//if there is any error in it, than call the Error method
+//also, collect error and add into the list
+//return:
+//the list which contain the error information 
+//parameter:
+//String fileName: the given file which contain the code need to be scan 
+    public List<Error> lint(String fileName) throws FileNotFoundException{
+        Scanner codeScanner = new Scanner(new File(fileName));
+        List<Error> errorsCollection = new ArrayList<>();
+        int lineNumber = 0;
+        while(codeScanner.hasNextLine()){
+            lineNumber++;
+            String codeLine = codeScanner.nextLine();
+            for (Check checkItem : checks) {
+                Optional<Error> error = checkItem.lint(codeLine, lineNumber);
+                if (error.isPresent()) { 
+                    Error e = error.get();
+                    errorsCollection.add(e);
+                }
+            }
+        }
+        return errorsCollection;
+    }
+}
