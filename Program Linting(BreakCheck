@@ -1,0 +1,26 @@
+import java.util.*;
+
+//this class is a implement for the interface named Check
+//this class is allows to find if the given line include a keyword "break"
+//excpet the the keyword located in comment
+public class BreakCheck implements Check{
+
+//this method allow to find if thers is any "break" keywords in the given Line, no break in comment
+//parameter:
+//String line: a string represents a given code line
+//int lineNumber: the number of the line
+//return:
+//if the keyword in line, then return a error Optional
+//if there is no keyword in line, then return a empty Optioanl
+    public Optional<Error> lint(String line, int lineNumber){
+        if(line.contains("//")){
+            int commentIndex = line.indexOf("//");
+            line = line.substring(0,commentIndex);
+        }
+        if(line.contains("break")){
+            return Optional.of(new Error(2, lineNumber, "this line contains keyword \"break\""));
+        }else{
+            return Optional.empty();
+        }
+    }
+}
