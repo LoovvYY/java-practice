@@ -1,0 +1,47 @@
+//this class is try to find error from the given code
+
+import java.util.*;
+
+public class Error{
+    private int code;
+    private int lineNumber;
+    private String message;
+
+//this instruction is used to initialize the given parameter
+    public Error(int code, int lineNumber, String message) {
+        this.code = code;
+        this.lineNumber = lineNumber;
+        this.message = message;
+    }
+
+//this method use the toString method and allows to return the String
+//return:
+//the string about the information about the error include line number, 
+//code and message of the error
+    public String toString() {
+        return "(Line: " + lineNumber + ") has error code " + code + "\n" + message;
+        
+    }
+
+//this method allows to return an int
+//return:
+//a int about the number of the given code
+    public int getLineNumber(){
+        return lineNumber;
+    }
+
+//this method allows to return an int
+//return:
+//a int that represents the error code number
+
+    public int getCode(){
+        return code;
+    }
+
+//this method allows to retun a string
+//return:
+//a message about the error
+    public String getMessage(){
+        return message;
+    }
+}
