@@ -1,0 +1,21 @@
+import java.util.*;
+
+//this class is a implement for the interface named Check
+//this class is check the length of the given line
+public class LongLineCheck implements Check{
+
+//this method is allows to check the length of the givne line
+//return:
+//if the length of the line is more than or equals 100, than return Optioanl<Error>
+//if the length of the line is less than 100, than return an empty Optional
+//parameter:
+//String line: a string represents a given code line
+//int lineNumber: the number of the line
+    public Optional<Error> lint(String line, int lineNumber){
+        if(line.length() >= 100){
+            return Optional.of(new Error(1, lineNumber, "this line equals or longer than 100"));
+        }else{
+            return Optional.empty();
+        }
+    }
+}
