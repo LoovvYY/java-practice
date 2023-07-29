@@ -1,0 +1,168 @@
+import java.util.*;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+
+public class MusicPlaylistTests {
+    @Test
+    @DisplayName("Test if can add and play song correct")
+    public void testAddAndPlayMusic(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        String musicName = "abab";
+        musicList.addItems(musicName);
+        String playing = musicList.playMusic();
+        assertEquals(musicName, playing);
+    }
+
+    @Test
+    @DisplayName("Test if the size is correct")
+    public void testSize(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        int size = musicList.historySize();
+        assertEquals(2,size);
+    }
+
+    @Test
+    @DisplayName("Test exception thrown when playing songs with no song waiting to play ")
+    public void testPlayThrowException(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        assertThrows(IllegalStateException.class, () -> {
+            musicList.playMusic();
+        });
+
+    }
+
+    @Test
+    @DisplayName("Test exception thrown when delete songs with a empty history")
+    public void testDeleteThrowException(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        assertThrows(IllegalArgumentException.class, () -> {
+            musicList.deleteHistory(2);
+        });
+
+    }
+
+    @Test
+    @DisplayName("Test if get history correct")
+    public void testGetHistory(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        List<String> getHistory = musicList.getHistory();
+        assertEquals("song2", getHistory.get(0));
+        assertEquals("song1", getHistory.get(1));
+    }
+
+    @Test
+    @DisplayName("Test exception thrown when get history with a empty history")
+    public void testGetHistoryThrowException(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        assertThrows(IllegalStateException.class, () -> {
+            musicList.getHistory();
+        });
+    }
+
+    @Test
+    @DisplayName("Test if clear history correctly")
+    public void testClearHistory(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        musicList.clearHistory();
+        int currentSize = musicList.historySize();
+        assertEquals(0, currentSize);
+    }
+
+    @Test
+    @DisplayName("Test exception thrown correctly when get history is called after clear history")
+    public void testClearHistoryException(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        musicList.clearHistory();
+        assertThrows(IllegalStateException.class, () -> {
+            musicList.getHistory();
+        });
+    }
+
+    @Test
+    @DisplayName("Test delete history in positive size correct")
+    public void testDeletePositiveSize(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        musicList.deleteHistory(1);
+        List<String> currentHistory = musicList.getHistory();
+        assertEquals("song1", currentHistory.get(0));
+    }
+
+    @Test
+    @DisplayName("Test delete history in negative size correct")
+    public void testDeleteNegativeSize(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        musicList.deleteHistory(-1);
+        List<String> currentHistory = musicList.getHistory();
+        assertEquals("song2", currentHistory.get(0));
+    }
+
+    @Test
+    @DisplayName("Test throw exception when the input abs size is larger than history size")
+    public void testDeleteLargerSizeException(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        assertThrows(IllegalArgumentException.class, () -> {
+            musicList.deleteHistory(4);
+        });
+
+        MusicPlaylist musicList1 = new MusicPlaylist();
+        musicList1.addItems("song1");
+        musicList1.addItems("song2");
+        musicList1.playMusic();
+        musicList1.playMusic();
+        assertThrows(IllegalArgumentException.class, () -> {
+            musicList1.deleteHistory(-4);
+        });
+    }
+
+    @Test
+    @DisplayName("Test if input  is 0 delete does nothing")
+    public void testDeleteZeroSize(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.addItems("song1");
+        musicList.addItems("song2");
+        musicList.playMusic();
+        musicList.playMusic();
+        musicList.deleteHistory(0);
+        List<String> getHistory = musicList.getHistory();
+        assertEquals("song2", getHistory.get(0));
+        assertEquals("song1", getHistory.get(1));
+    }
+
+    @Test
+    @DisplayName("Test if input is 0 and delete history is empty , the size is also 0")
+    public void testZeroDeleteZeroSize(){
+        MusicPlaylist musicList = new MusicPlaylist();
+        musicList.deleteHistory(0);
+        int currentSize = musicList.historySize();
+        assertEquals(0, currentSize);
+    }
+}
