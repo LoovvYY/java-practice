@@ -1,0 +1,32 @@
+import java.util.*;
+
+public class MenuItemMain {
+    public static void main(String[] args) {
+        // Use this client program to test out your solution
+        // ingredients1 = {potatoes=900.0, salt=17.06, oil=896.5}
+        // ingredients2 = {Potatoes=907.185, salt=35.98, butter=227, cream=170}}
+        // Make ingredient map
+        Map<String, Double> ingredients1 = new HashMap<>();
+        ingredients1.put("potatoes", 900.0);
+        ingredients1.put("salt", 17.06);
+        ingredients1.put("oil", 896.5);
+        Map<String, Double> ingredients2 = new HashMap<>();
+        ingredients2.put("Potatoes", 907.185);
+        ingredients2.put("salt", 35.98);
+        ingredients2.put("butter", 227.0);
+        ingredients2.put("cream", 170.0);
+
+
+        MenuItem fries = new MenuItem("fries", ingredients1, 6.85);
+        MenuItem mashedPotatoes = new MenuItem("mashed potatoes", ingredients2, 8.0);   
+
+        fries.getName();
+        fries.getCost();
+        fries.getIngredientAmount("salt");
+        fries.setCost(60.0);
+        fries.addIngredient("oil", 300.0);
+        fries.increaseAmount("oil");
+        fries.containsIngredient("salt");
+        fries.ingredientsInCommon(mashedPotatoes);
+    }
+}
