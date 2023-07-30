@@ -1,0 +1,77 @@
+import java.util.*;
+
+public class MenuItem{
+    private String menuName;
+    private Map<String, Double> ingredients;
+    private double cost;
+
+    public MenuItem(String menuName, Map<String, Double> ingredients, double cost){
+        this. menuName = menuName;
+        this. cost = cost;
+        this. ingredients = new HashMap<>();
+        for(String ingredient : ingredients.keySet()){
+            this.ingredients.put(ingredient, ingredients.get(ingredient));
+        }
+    }
+
+    public MenuItem(String menuName){
+        this. menuName = menuName;
+        this. ingredients = new HashMap<>();
+    }
+
+    public String getName(){
+        return menuName;
+    }
+
+    public double getCost(){
+        return cost;
+    }
+
+    public double getIngredientAmount(String ingredient){
+        if(!ingredients.containsKey(ingredient)){
+            return 0.0;
+        }
+        return ingredients.get(ingredient);
+    }
+
+    public void setCost(double amount){
+        if (amount < 0) {
+            throw new IllegalArgumentException();
+        }
+        this.cost = amount;
+    }
+
+    public boolean addIngredient(String ingredient, double amount){
+        if(ingredients.containsKey(ingredient)){
+            ingredients.put(ingredient, amount);
+            return true;
+        }else{
+            ingredients.put(ingredient, amount);
+            return false;
+        }
+    }
+
+    public void increaseAmount(String ingredient){
+        if(!ingredients.containsKey(ingredient)){
+            throw new IllegalArgumentException();
+        }
+        double gram = ingredients.get(ingredient);
+        gram++;
+        ingredients.put(ingredient, gram);
+
+    }
+
+    public boolean containsIngredient(String ingredient){
+        return ingredients.containsKey(ingredient);
+    }
+
+    public Set<String> ingredientsInCommon(MenuItem other){
+        Set<String> sameIngredientSet = new HashSet<>();
+        for(String ingredient : ingredients.keySet()){
+            if(other.containsIngredient(ingredient)){
+                sameIngredientSet.add(ingredient);
+            }
+        }
+        return sameIngredientSet; 
+    }
+}
