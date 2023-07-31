@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class NestedCollectionsDebugging {
+    public static void main(String[] args) {
+        Map<String, Set<String>> tas = new HashMap<>();
+        Set<String> shivaniHobbies = new HashSet<>();
+        shivaniHobbies.add("coding");
+        shivaniHobbies.add("hiking");
+
+        Set<String> meganaHobbies = new HashSet<>();
+        meganaHobbies.add("coding");
+        meganaHobbies.add("hiking");
+        meganaHobbies.add("reading");
+
+        Set<String> ernieHobbies = new HashSet<>();
+        ernieHobbies.add("coding");
+        ernieHobbies.add("reading");
+        ernieHobbies.add("biking");
+
+        tas.put("Shivani", shivaniHobbies);
+        tas.put("Megana", meganaHobbies);
+        tas.put("Ernie", ernieHobbies);
+
+        System.out.println("Common hobbies: " + commonHobbies(tas));
+    }
+
+    public static Map<String, Set<String>> commonHobbies(Map<String, Set<String>> map) {
+        Map<String, Set<String>> result = new TreeMap<>();
+        for (String ta : map.keySet()) {
+            Set<String> hobbies = map.get(ta);
+            for (String hobby : hobbies) {
+                if (!result.containsKey(hobby)) {
+                    Set<String> tasWithHobby = new HashSet<>();
+                    tasWithHobby.add(ta);
+                    result.put(hobby, tasWithHobby);
+                } else {
+                    Set<String> tasWithHobby = result.get(hobby);
+                    tasWithHobby.add(ta);
+                }
+            }
+        }
+        return result;
+    }
+}
