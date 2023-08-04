@@ -1,0 +1,10 @@
+public void switchPairs(List<String> list) {
+    for(int i = 0; i+1< list.size(); i = i + 2){
+            String firstOne = list.get(i);
+            String secondOne = list.get(i + 1);
+            list. set(i, secondOne);
+            list.set(i+1, firstOne);
+        
+            
+    }
+}
