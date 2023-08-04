@@ -1,0 +1,12 @@
+public String acronymFor(List<String> words) {
+    String wholeChar ="";
+    for(int i =0; i< words.size(); i++){
+        String wholeWord = words.get(i);
+        Character firstChar = wholeWord.charAt(0);
+        String first = Character.toString(firstChar);
+        String upperChar = first.toUpperCase(); ;
+        wholeChar = wholeChar + upperChar;
+    }
+    return wholeChar;
+	
+}
