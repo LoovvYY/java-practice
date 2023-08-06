@@ -1,0 +1,16 @@
+public static void reverse3(ArrayList<Integer> list) {
+    int currentSize = 0;
+	if(!(list.size()%3 == 0)){
+        int moreSize = list.size()%3;
+        currentSize = list.size() - moreSize;
+    }else{
+        currentSize = list.size();
+    }
+    for(int i =0; i< currentSize; i = i+3){
+        int firstNum = list.get(i);
+        int thirdNum = list.get(i+2);
+        list.set(i, thirdNum);
+        list.set(i+2, firstNum);
+    }
+    
+}
