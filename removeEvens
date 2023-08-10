@@ -1,0 +1,15 @@
+public Set<Integer> removeEvens(Set<Integer> s) {
+    Set<Integer> s1 = new HashSet<>();
+    List<Integer> s2 = new ArrayList<>();
+    for(int num : s){
+        if(num%2 ==0){
+            s2.add(num);
+        }
+    }
+    int size = s2.size();
+    for(int i =0; i< size; i++){
+        s.remove(s2.get(i));
+        s1.add(s2.get(i));
+    }
+	return s1;
+}
